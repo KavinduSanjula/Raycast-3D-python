@@ -1,0 +1,7 @@
+
+TITLE = "Raycast-3D"
+WIDTH = 1280
+HEIGHT = 720
+CELL_SIZE = WIDTH//20
+FPS = 60
+FOV = 60
