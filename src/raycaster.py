@@ -1,4 +1,3 @@
-from re import M
 import pygame as pg
 from pygame import Vector2
 
@@ -16,14 +15,32 @@ class Raycaster:
         self.step = 10
 
     def cast_a_ray(self):
-        currnt_point = self.player.position
+        x1,y1 = 0,0
+        x2,y2 = 10,0
+        dx,dy = (x2-x1), (y2-y1)
+        x,y = 0,0
+
+        if abs(dx) > abs(dy):
+            step = abs(dx)
+        else:
+            step = abs(dy)
+
+        x_inc = dx/step
+        y_inc = dy/step
+
+        x = x1
+        y = y1
+
+        pg.draw.rect(self.surface,(255,255,200),
+        [round(x) * self.map.cell_size, round(y) * self.map.cell_size, self.map.cell_size,self.map.cell_size])
+
         while True:
-            currnt_point = currnt_point + self.player.heding_vector * self.step
+            x += x_inc
+            y += y_inc
 
-            x = int(currnt_point[0]//self.map.cell_size)
-            y = int(currnt_point[1]//self.map.cell_size)
+            pg.draw.rect(self.surface,(255,255,200),
+            [round(x) * self.map.cell_size, round(y) * self.map.cell_size, self.map.cell_size,self.map.cell_size])
+            pg.draw.circle(self.surface, (20,20,255),(x* self.map.cell_size,y* self.map.cell_size),5)
 
-            if not self.map.get_cell(x,y):
-                break
-
-        pg.draw.line(self.surface,(255,255,0),self.player.position,currnt_point)
+            if x>= x2: break
+            
