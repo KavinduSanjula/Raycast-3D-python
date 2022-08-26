@@ -33,30 +33,36 @@ class Raycaster:
         pos_x_in_cell = self.player.position[0] - int(map_x) * CELL_SIZE
         pos_y_in_cell = self.player.position[1] - int(map_y) * CELL_SIZE
 
-        dx = CELL_SIZE - pos_x_in_cell  
-        dy = CELL_SIZE - pos_y_in_cell   
+        dx = CELL_SIZE - pos_x_in_cell
+        dy = CELL_SIZE - pos_y_in_cell
+
+        dof = 5
 
         if ray_dir_x > 0:
+            
             opp1 = math.tan(math.radians(self.player.heding)) * dx
-            y1 = (map_y + 1) * CELL_SIZE - (-opp1+dy)
+            y1 = (map_y + 1) * CELL_SIZE + (opp1 - dy)
             x1 = (map_x + 1) * CELL_SIZE
             self.plot(x1,y1)
 
-            opp2 = math.tan(math.radians(self.player.heding)) * (dx + CELL_SIZE)
-            y2 = (map_y + 1) * CELL_SIZE - (-opp2+dy)
-            x2 = (map_x + 2) * CELL_SIZE
-            self.plot(x2,y2)
+            for i in range(dof):
+                opp = math.tan(math.radians(self.player.heding)) * (dx + CELL_SIZE * i)
+                x = (map_x + i+1) * CELL_SIZE
+                y = (map_y + 1) * CELL_SIZE + (opp - dy)
+                self.plot(x,y)
 
         else:
+
             opp1 = math.tan(math.radians(self.player.heding)) * pos_x_in_cell
-            y1 = (map_y + 1) * CELL_SIZE - (opp1+dy)
+            y1 = (map_y + 1) * CELL_SIZE + (-opp1-dy)
             x1 = (map_x) * CELL_SIZE
             self.plot(x1,y1)
 
-            opp2 = math.tan(math.radians(self.player.heding)) * (pos_x_in_cell + CELL_SIZE)
-            y2 = (map_y + 1) * CELL_SIZE - (opp2+dy)
-            x2 = (map_x - 1) * CELL_SIZE
-            self.plot(x2,y2)
+            for i in range(dof):
+                opp = math.tan(math.radians(self.player.heding)) * (pos_x_in_cell + CELL_SIZE * i)
+                x = (map_x - i) * CELL_SIZE
+                y = (map_y + 1) * CELL_SIZE + (-opp-dy)
+                self.plot(x,y)
 
 
 
