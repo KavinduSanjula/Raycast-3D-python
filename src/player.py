@@ -8,10 +8,11 @@ class Player:
     def __init__(self, position:Vector2):
         self.position = position
 
-        self.heding = 0
-        self.heding_vector = Vector2((math.cos(self.heding), math.sin(self.heding))).normalize()
+        self.heding = -30
+        self.heding_vector = Vector2((math.cos(math.radians(self.heding)), math.sin(math.radians(self.heding)))).normalize()
         self.size = 10
         self.speed = 5
+        self.rotation_speed = 2.5
 
     def update(self, surface):
         self.controls()
@@ -31,10 +32,10 @@ class Player:
             self.move_forward(-1)
 
         if pg.key.get_pressed()[pg.K_LEFT]:
-            self.rotate(-.05)
+            self.rotate(-1)
 
         if pg.key.get_pressed()[pg.K_RIGHT]:
-            self.rotate(.05)
+            self.rotate(1)
 
     def draw(self,surface):
         pg.draw.circle(surface,(255,20,10),self.position,self.size)
@@ -48,12 +49,12 @@ class Player:
         self.position += self.get_right_vector() * dir * self.speed
 
     def rotate(self, angle):
-        self.heding += angle
-        self.heding_vector = Vector2((math.cos(self.heding), math.sin(self.heding))).normalize()
+        self.heding += angle * self.rotation_speed
+        self.heding_vector = Vector2((math.cos(math.radians(self.heding)), math.sin(math.radians(self.heding)))).normalize()
 
 
 
     def get_right_vector(self):
         a = self.heding + 90
-        right_vector = Vector2((math.cos(a), math.sin(a))).normalize()
+        right_vector = Vector2((math.cos(math.radians(a)), math.sin(math.radians(a)))).normalize()
         return right_vector
