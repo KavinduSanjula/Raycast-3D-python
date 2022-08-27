@@ -14,9 +14,8 @@ class Player:
         self.speed = 5
         self.rotation_speed = 2.5
 
-    def update(self, surface):
+    def update(self):
         self.controls()
-        self.draw(surface)
 
     def controls(self):
         if pg.key.get_pressed()[pg.K_a]:

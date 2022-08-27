@@ -18,9 +18,10 @@ class Raycast3D(Application):
 
     def update(self, delta):
         self.map.draw(self.window)
-        #self.map.heighlight_square(self.player.position, self.window)
-        self.player.update(self.window)
-        self.raycaster.cast_a_ray(self.player.heding)
+        # self.map.heighlight_square(self.player.position, self.window)
+        self.player.update()
+        self.player.draw(self.window)
+        dists = self.raycaster.ray_cast()
 
 def main():
     app = Raycast3D()
