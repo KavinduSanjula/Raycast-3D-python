@@ -20,7 +20,7 @@ class Raycast3D(Application):
         self.map.draw(self.window)
         #self.map.heighlight_square(self.player.position, self.window)
         self.player.update(self.window)
-        self.raycaster.cast_a_ray()
+        self.raycaster.cast_a_ray(self.player.heding)
 
 def main():
     app = Raycast3D()

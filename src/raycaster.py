@@ -21,14 +21,11 @@ class Raycaster:
 
     
 
-    def cast_a_ray(self):
+    def cast_a_ray(self, angle):
         
         ray_dir_x = math.cos(math.radians(self.player.heding))
         ray_dir_y = math.sin(math.radians(self.player.heding))
-        dir = Vector2(ray_dir_x,ray_dir_y).normalize()
-
-        step_x = 0
-        step_y = 0
+        ray_dir = Vector2(ray_dir_x,ray_dir_y).normalize()
 
         map_x = self.player.position[0] // CELL_SIZE
         map_y = self.player.position[1] // CELL_SIZE
@@ -40,95 +37,53 @@ class Raycaster:
         delta_y = CELL_SIZE - pos_y_in_cell
 
         dof = 15
-        dist_x = 0
-        dist_y = 0
+        dist_vert = 0 # distance to wall from vertical lines
+        dist_hori = 0 # distance to wall from horizontal lines
 
-        if ray_dir_x > 0:
-
+        # Vertical line check
+        if ray_dir_x > 0: 
+            # cos plus side
             for i in range(dof):
-                opp = math.tan(math.radians(self.player.heding)) * (delta_x + CELL_SIZE * i)
-                x = (map_x + i+1) * CELL_SIZE
-                y = (map_y + 1) * CELL_SIZE + (opp - delta_y)
-                # self.plot(x,y)
-
-                if not self.map.get_cell(int(x//CELL_SIZE), int(y//CELL_SIZE)): break
+                op = math.tan(math.radians(angle)) * (delta_x + i*CELL_SIZE)
+                x_coord = (map_x + i + 1) * CELL_SIZE
+                y_coord = (map_y * CELL_SIZE) + pos_y_in_cell + op
+                # self.plot(x_coord,y_coord)
+                if not self.map.get_cell(int(x_coord//CELL_SIZE), int(y_coord//CELL_SIZE)): break
 
         else:
-
+            # cos minus side
             for i in range(dof):
-                opp = math.tan(math.radians(self.player.heding)) * (pos_x_in_cell + CELL_SIZE * i)
-                x = (map_x - i) * CELL_SIZE
-                y = (map_y + 1) * CELL_SIZE + (-opp-delta_y)
-                # self.plot(x,y)
+                op = math.tan(math.radians(180 - angle)) * (pos_x_in_cell + i*CELL_SIZE)
+                x_coord = (map_x - i) * CELL_SIZE
+                y_coord = (map_y * CELL_SIZE) + pos_y_in_cell + op
+                # self.plot(x_coord,y_coord)
+                if not self.map.get_cell(int(x_coord//CELL_SIZE - 1), int(y_coord//CELL_SIZE)): break
 
-                if not self.map.get_cell(int(x//CELL_SIZE) -1, int(y//CELL_SIZE)): break
+        hit_vert = Vector2(x_coord,y_coord)
+        dist_vert = (self.player.position - hit_vert).magnitude()
 
-        hit_x = Vector2(x,y)
-        distance_x = (self.player.position - hit_x).magnitude()
         
-
-
-        if ray_dir_x > 0:
-
-            if ray_dir_y < 0:
-                for i in range(0, dof):
-                    op = math.tan(math.radians(90 - self.player.heding)) * (pos_y_in_cell + (CELL_SIZE * i))
-                    x = (map_x * CELL_SIZE) + pos_x_in_cell + -op
-                    y = (map_y - i) * CELL_SIZE
-                    # self.plot(x,y)
-                    
-                    if not self.map.get_cell(int(x//CELL_SIZE), int(y//CELL_SIZE)-1): break
-
-
-
-            else:
-                for i in range(0, dof):
-                    op = math.tan(math.radians(90 - self.player.heding)) * (delta_y + (CELL_SIZE * i))
-                    x = (map_x * CELL_SIZE) + pos_x_in_cell + op
-                    y = (map_y + i+1) * CELL_SIZE
-                    # self.plot(x,y)
-                    
-                    if not self.map.get_cell(int(x//CELL_SIZE), int(y//CELL_SIZE)): break
-
+        # Horizontal line check
+        if ray_dir_y > 0:
+            #sin plus side
+            for i in range(dof):
+                op = math.tan(math.radians(90 - angle)) * (delta_y + i*CELL_SIZE)
+                x_coord = (map_x * CELL_SIZE) + pos_x_in_cell + op
+                y_coord = (map_y + i + 1) * CELL_SIZE
+                # self.plot(x_coord,y_coord)
+                if not self.map.get_cell(int(x_coord//CELL_SIZE), int(y_coord//CELL_SIZE)): break
 
         else:
+            # sin minus side
+            for i in range(dof):
+                op = math.tan(math.radians(90 - angle)) * (pos_y_in_cell + i*CELL_SIZE)
+                x_coord = (map_x * CELL_SIZE) + pos_x_in_cell - op
+                y_coord = (map_y - i) * CELL_SIZE
+                # self.plot(x_coord,y_coord)
+                if not self.map.get_cell(int(x_coord//CELL_SIZE), int(y_coord//CELL_SIZE - 1)): break
 
-            if ray_dir_y < 0:
-                angle = self.player.heding - 90
+        hit_hori = Vector2(x_coord,y_coord)
+        dist_hori = (self.player.position - hit_hori).magnitude()
 
-                for i in range(0, dof):
-                    op = math.tan(math.radians(angle)) * (pos_y_in_cell + (CELL_SIZE * i))
-                    x = (map_x + 1) * CELL_SIZE - delta_x + op
-                    y = (map_y - i) * CELL_SIZE
-                    # self.plot(x,y)
-                    
-                    if not self.map.get_cell(int(x//CELL_SIZE), int(y//CELL_SIZE)-1): break
-
-            else:
-                angle = 90 - (self.player.heding - 180)
-
-                for i in range(0, dof):
-                    op = math.tan(math.radians(angle)) * (delta_y + (CELL_SIZE * i))
-                    x = (map_x + 1) * CELL_SIZE - delta_x + op
-                    y = (map_y + i+1) * CELL_SIZE
-                    # self.plot(x,y)
-
-                    if not self.map.get_cell(int(x//CELL_SIZE), int(y//CELL_SIZE)): break
-                
-        hit_y = Vector2(x,y)
-        distance_y = (self.player.position - hit_y).magnitude()
-        
-        ray_distance = distance_x if distance_x < distance_y else distance_y
-
-        pg.draw.line(self.surface,(255,255,255),self.player.position, self.player.position + dir*ray_distance)
-
-
-
-
-
-        # pos2X = (self.player.position[0] + delta_x, self.player.position[1])
-        # pos2Y = (self.player.position[0] , self.player.position[1] + delta_y)
-        # pg.draw.line(self.surface,(255,255,20),self.player.position, pos2X) 
-        # pg.draw.line(self.surface,(20,255,20),self.player.position, pos2Y) 
-
-        
+        ray_distance = dist_vert if dist_vert < dist_hori else dist_hori
+        pg.draw.line(self.surface,(255,255,255),self.player.position, self.player.position + ray_dir*ray_distance)
