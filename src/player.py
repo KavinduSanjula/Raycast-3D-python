@@ -37,6 +37,7 @@ class Player:
             self.rotate(1)
 
     def draw(self,surface):
+        pass
         pg.draw.circle(surface,(255,20,10),self.position,self.size)
         pg.draw.line(surface,(150,150,255),self.position,self.position + self.heding_vector * 50)
 

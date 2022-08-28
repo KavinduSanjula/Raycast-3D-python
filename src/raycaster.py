@@ -1,6 +1,6 @@
-from cmath import sqrt
+
 import math
-from turtle import distance
+import numpy
 import pygame as pg
 from pygame import Vector2
 from config import CELL_SIZE, DOF, FOV, RAY_COUNT
@@ -85,18 +85,15 @@ class Raycaster:
         ray_distance = dist_vert if dist_vert < dist_hori else dist_hori
         pg.draw.line(self.surface,(255,255,255),self.player.position, self.player.position + ray_dir*ray_distance)
         
+        ray_distance *= math.cos(math.radians(self.player.heding - angle))
         return int(ray_distance)
 
 
     def ray_cast(self):
         distance_list = []
 
-        min_a = int(self.player.heding - self.fov / 2)
-        max_a = int(self.player.heding + self.fov / 2)
-        step = int(self.fov / self.ray_count)
-
-        for a in range(min_a, max_a, step):
-            dist = self.cast_a_ray(a)
+        for a in numpy.arange(-self.fov/2, self.fov/2, self.fov/self.ray_count):
+            dist = self.cast_a_ray(self.player.heding + a)
             distance_list.append(dist)
 
         return distance_list

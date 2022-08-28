@@ -34,11 +34,6 @@ class Map:
             return self.map[y][x]
         except:
             return False
-
-    def heighlight_square(self, pos:Vector2, surface):
-        pos_x = (pos[0]// CELL_SIZE) *  CELL_SIZE
-        pos_y = (pos[1]// CELL_SIZE) *  CELL_SIZE
-        pg.draw.rect(surface,(0,255,25),[pos_x,pos_y, CELL_SIZE, CELL_SIZE])
         
 
 
